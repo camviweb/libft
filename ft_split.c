@@ -20,13 +20,16 @@ static	int	ft_count_parts(char const *s, char c)
 
 	count = 0;
 	i = 0;
-	while (s[i] == c)
-		i++;
+	if (s[0] == '\0')
+		return (1);
 	while (s[i])
 	{
-		if ((s[i] != c && s[i + 1] == c) || s[i + 1] == '\0')
+		while (s[i] == c)
+			i++;
+		if (s[i] != '\0')
 			count++;
-		i++;
+		while (s[i] != c && s[i] != '\0')
+			i++;
 	}
 	return (count);
 }
@@ -78,7 +81,7 @@ char	**ft_split(char const *s, char c)
 		return (NULL);
 	i = 0;
 	count = ft_count_parts(s, c);
-	while (i < count + 1)
+	while (i < count)
 	{
 		new[i] = ft_substr(s, 0, get_lil_len(s, c));
 		if (!new[i])
