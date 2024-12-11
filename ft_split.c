@@ -6,7 +6,7 @@
 /*   By: canguyen <canguyen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 11:06:32 by canguyen          #+#    #+#             */
-/*   Updated: 2024/12/09 19:38:35 by canguyen         ###   ########.fr       */
+/*   Updated: 2024/12/11 14:40:13 by canguyen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ static	int	ft_count_parts(char const *s, char c)
 
 	count = 0;
 	i = 0;
-	if (s[0] == '\0')
-		return (1);
 	while (s[i])
 	{
 		while (s[i] == c)
@@ -47,25 +45,27 @@ static	int	get_lil_len(const char *s, char c)
 	return (lil_len);
 }
 
-static	char	**ft_malloc(char const *s, char c)
-{
-	char	**new;
-
-	new = (char **)malloc(sizeof * new * (ft_count_parts(s, c) + 1));
-	if (new == NULL)
-		return (NULL);
-	return (new);
-}
-
 static	char	**ft_free(char **new)
 {
+	char	**temp;
+
+	temp = new;
 	while (*new)
 	{
 		free(*new);
 		new++;
 	}
-	free(new);
+	free(temp);
 	return (NULL);
+}
+
+static	char	**ft_null(void)
+{
+	char	**new;
+
+	new = (char **)malloc(sizeof * new);
+	new[0] = NULL;
+	return (new);
 }
 
 char	**ft_split(char const *s, char c)
@@ -75,20 +75,20 @@ char	**ft_split(char const *s, char c)
 	int		count;
 
 	if (s[0] == '\0')
-		return (NULL);
-	new = ft_malloc(s, c);
+		return (ft_null());
+	new = (char **)malloc(sizeof * new * (ft_count_parts(s, c) + 1));
 	if (!new)
 		return (NULL);
 	i = 0;
 	count = ft_count_parts(s, c);
 	while (i < count)
 	{
+		while (*s == c && *s != '\0')
+			s++;
 		new[i] = ft_substr(s, 0, get_lil_len(s, c));
 		if (!new[i])
 			return (ft_free(new));
 		s += get_lil_len(s, c);
-		while (*s == c && *s != '\0')
-			s++;
 		i++;
 	}
 	new[i] = NULL;
